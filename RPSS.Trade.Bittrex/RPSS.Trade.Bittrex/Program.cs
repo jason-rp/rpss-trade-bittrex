@@ -15,6 +15,7 @@ namespace RPSS.Trade.Bittrex
                     i.ConstructUsing(() => new BittrexWathcherService());
                     i.WhenStarted(e => e.Start());
                     i.WhenStopped(e => e.Stop());
+
                 });
 
                 n.SetServiceName("RPSS.Bittrex.Watcher");
