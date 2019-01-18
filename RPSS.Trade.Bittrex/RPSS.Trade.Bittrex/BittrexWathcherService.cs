@@ -17,7 +17,7 @@ namespace RPSS.Trade.Bittrex
             LogWriter.InfoFormat("Start");
             _bittrexWatcher = new BittrexCalculator();
 
-            var question = BittrexQuestionnaireFactory.GetBittrexQuestionnaire();
+            var question = BittrexQuestionnaireFactory.GetStartDecision();
 
             Console.ReadLine();
 

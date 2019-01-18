@@ -9,7 +9,12 @@ namespace RPSS.Trade.Bittrex.Core
 
         public static Decision GetBittrexQuestionnaire()
         {
-            return GetAccountInfoDecision();
+            var accountDecision =  GetAccountInfoDecision();
+
+            var question =
+                GetStartDecision(branches: new Dictionary<int, IDecision> {{1, accountDecision}, {2, accountDecision}});
+
+            return question;
         }
 
         public static Decision GetAccountInfoDecision(Dictionary<int, IDecision> branches = null)
@@ -46,6 +51,42 @@ namespace RPSS.Trade.Bittrex.Core
 
             // Return
             return breadTypeDecision;
+        }
+
+        public static Decision GetStartDecision(Dictionary<int, IDecision> branches = null)
+        {
+            branches = branches ?? new Dictionary<int, IDecision> { };
+
+            Action<IDecision, IDecision> question = (d, a) =>
+            {
+                var decision = d as BittrexStartDecision;
+
+                if (decision != null)
+                {
+                    // ask question
+                    Console.WriteLine("{0}", decision.Question);
+                    var ans = Console.ReadLine() ?? string.Empty;
+
+                    // branch choice ...
+                    var branchChoice = Convert.ToInt32(ans);
+                    //var branchChoice = (int)BranchChoiceEnum.NotKnown;
+
+                    // assign/calculate properties of the decision
+                    decision.BittrexGroupOder = (BittrexGroupOderEnum) branchChoice;
+                    decision.Amount = 3.2f;
+
+                    // assign branch choice given users answers
+                    decision.Result = branchChoice;
+                }
+            };
+            var questionnaire = new BittrexStartDecision
+            {
+                Question = string.Format("[/1] {0} ?", Enum<BittrexGroupOderEnum>.EnumsStringSummary()),
+                Mutator = question,
+                Branches = branches
+            };
+
+            return questionnaire;
         }
     }
 }
